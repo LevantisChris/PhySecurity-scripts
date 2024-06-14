@@ -25,19 +25,16 @@ function do_QAM64_5(MAX_SHOWOFF)
     for idx = 1:num_messages
         encoded_message = encoded_messages(idx, :);
     
-        % Pad the encoded message to make its length a multiple of 6
         padded_message_length = ceil(length(encoded_message) / 6) * 6;
         padded_message = [encoded_message, zeros(1, padded_message_length - length(encoded_message))];
 
-        % Reshape the message to get 6-bit segments
         reshaped_message = reshape(padded_message, [], 6); % Κάθε γραμμή θα είναι ένα 6-bit segment
     
         disp(reshaped_message);
 
-        % Convert binary to decimal
         decimal_message = bi2de(reshaped_message);
         
-        % QAM modulation
+        % 64-QAM διαμόρφωση
         modulated_signal = qammod(decimal_message, 64, 'UnitAveragePower', true, 'InputType', 'integer');
         
         modulated_signals(idx, :) = modulated_signal;
