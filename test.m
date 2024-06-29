@@ -1,22 +1,21 @@
-% Example input signal (complex)
-x = randn(1, 100) + 1i * randn(1, 100);
+function errorCounts = test(generatorPolynomial)
+    load('receiver_decoded_CRC_11d.mat', 'receiver_decoded_CRC');
+    numMessages = size(receiver_decoded_CRC, 1);
+    errorCounts = zeros(numMessages, 1);  % To store error results for each message
 
-% Desired SNR in dB
-SNR_dB = 20;
+    for i = 1:numMessages
+        receivedMessage = logical(receiver_decoded_CRC(i, :));  % Convert to logical
+        generatorPolynomial = logical(generatorPolynomial(:));
 
-% Pass the signal through the AWGN channel
-y = awgn_channel_7(x, SNR_dB);
+        % Append zeros for CRC bits (only if needed)
+        if length(receivedMessage) < length(generatorPolynomial)
+            receivedMessage = [receivedMessage; zeros(length(generatorPolynomial) - length(receivedMessage), 1)];
+        end
 
-% Plot the original and noisy signals (optional)
-figure;
-subplot(2, 1, 1);
-plot(real(x), 'b');
-hold on;
-plot(real(y), 'r');
-title('Real Part: Original (Blue) and Noisy (Red)');
+        % Perform modulo-2 division
+        remainder = mod(conv(receivedMessage, generatorPolynomial), 2);
 
-subplot(2, 1, 2);
-plot(imag(x), 'b');
-hold on;
-plot(imag(y), 'r');
-title('Imaginary Part: Original (Blue) and Noisy (Red)');
+        % Count errors (without displaying each time)
+        errorCounts(i) = any(remainder);  % 1 if error, 0 if no error
+    end
+end

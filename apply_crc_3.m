@@ -6,6 +6,8 @@ function apply_crc_3()
     % Î¥Î»Î¿Ï€Î¿Î¯Î·ÏƒÎ· Ï„Î¿Ï… CRC-24
     crc24_gen = comm.CRCGenerator('Polynomial',[1 1 0 0 0 0 1 1 0 0 1 0 0 1 1 0 0 1 1 1 1 1 0 1 1]); % Î?Ï?Î¹ÏƒÎ¼Ï?Ï‚ Ï„Î¿Ï… CRC-24 generator
 
+    new_data = {};
+
      for i = 1:size(new_messages, 2)
          % NOTE --> Î¤Î± Î¼Î·Î½Ï…Î¼Î±Ï„Î± ÎµÎ¯Î½Î±Î¹ ÏƒÎµ Î±ÎºÎ­Ï?Î±Î¹Î± Î¼Î¿Ï?Ï†Î® ÏƒÏ„Î¿Î½ Ï€Î¯Î½Î±ÎºÎ±
          % new_messages, Î¿Ï€Î¿Ï?Ï„Îµ Î¸Î± Ï€Ï?Î­Ï€ÎµÎ¹ ÎºÎ±Î¹ Î½Î± Î¼ÎµÏ„Î±Ï„Ï?Î±Ï€Î¿Ï?Î½ ÏƒÎµ binary
@@ -15,10 +17,12 @@ function apply_crc_3()
         message = new_messages(:, i);
         
         % Î?ÎµÏ„Î±Ï„Ï?Î¿Ï€Î® ÏƒÎµ ÎºÎ±Ï„Î¬Î»Î»Î·Î»Î· Î´Ï…Î±Î´Î¹ÎºÎ® Î¼Î¿Ï?Ï†Î®
-        binary_message = double(dec2bin(message, 8)) - 48;
+        binary_message = double(dec2bin(message))';
+        %   disp(message)
+        %disp(dec2bin(message, 8))
         
-        % Î’Ï?Î¯ÏƒÎºÎ¿Ï…Î¼Îµ Ï„Î¿ CRC checksum
-        crc = step(crc24_gen, binary_message');
+        % CRC checksum, with the original message
+        crc = crc24_gen(binary_message);
         
         %% ΠΡοΣοΧΗ!!!!!! 
         % --> ΤϿϿα θα πάϿω πίνακα με διαστάσεις 100000x32, οποίος έχει σε
@@ -30,15 +34,10 @@ function apply_crc_3()
         % μηνϿματα που ειναι καθϿς το εξέτασα και χειϿοκίνητα με το
         % εϿγαλείο https://asecuritysite.com/comms/crc_div
         % 
-        new_data(i, :) = [crc'];
+        new_data{i} = crc';
     end
     
     % Î‘Ï€Î¿Î¸Î®ÎºÎµÏ…ÏƒÎ· Ï„Ï‰Î½ Î½Î­Ï‰Î½ Î¼Î·Î½Ï…Î¼Î¬Ï„Ï‰Î½ ÏƒÎµ Î­Î½Î± Î½Î­Î¿ Î±Ï?Ï‡ÎµÎ¯Î¿ .mat
     save('new_data_3.mat', 'new_data');
 
-end
-
-function [binary_messages_numeric] = convert_to_ASCII_0_1(new_messages)
-    binary_messages = dec2bin(new_messages, 8);
-    binary_messages_numeric = double(binary_messages) - 48; % Convert ASCII '0' and '1' to numeric 0 and 1
 end
