@@ -6,8 +6,6 @@ function apply_crc_3()
     % Î¥Î»Î¿Ï€Î¿Î¯Î·ÏƒÎ· Ï„Î¿Ï… CRC-24
     crc24_gen = comm.CRCGenerator('Polynomial',[1 1 0 0 0 0 1 1 0 0 1 0 0 1 1 0 0 1 1 1 1 1 0 1 1]); % Î?Ï?Î¹ÏƒÎ¼Ï?Ï‚ Ï„Î¿Ï… CRC-24 generator
 
-    new_data = {};
-
      for i = 1:size(new_messages, 2)
          % NOTE --> Î¤Î± Î¼Î·Î½Ï…Î¼Î±Ï„Î± ÎµÎ¯Î½Î±Î¹ ÏƒÎµ Î±ÎºÎ­Ï?Î±Î¹Î± Î¼Î¿Ï?Ï†Î® ÏƒÏ„Î¿Î½ Ï€Î¯Î½Î±ÎºÎ±
          % new_messages, Î¿Ï€Î¿Ï?Ï„Îµ Î¸Î± Ï€Ï?Î­Ï€ÎµÎ¹ ÎºÎ±Î¹ Î½Î± Î¼ÎµÏ„Î±Ï„Ï?Î±Ï€Î¿Ï?Î½ ÏƒÎµ binary
@@ -17,8 +15,7 @@ function apply_crc_3()
         message = new_messages(:, i);
         
         % Î?ÎµÏ„Î±Ï„Ï?Î¿Ï€Î® ÏƒÎµ ÎºÎ±Ï„Î¬Î»Î»Î·Î»Î· Î´Ï…Î±Î´Î¹ÎºÎ® Î¼Î¿Ï?Ï†Î®
-        binary_message = double(dec2bin(message))';
-        %   disp(message)
+        binary_message = double(dec2bin(message, 8))'; % ελάχιστο θα είναι 8 bits
         %disp(dec2bin(message, 8))
         
         % CRC checksum, with the original message
@@ -34,7 +31,7 @@ function apply_crc_3()
         % μηνϿματα που ειναι καθϿς το εξέτασα και χειϿοκίνητα με το
         % εϿγαλείο https://asecuritysite.com/comms/crc_div
         % 
-        new_data{i} = crc';
+        new_data(i, :) = crc';
     end
     
     % Î‘Ï€Î¿Î¸Î®ÎºÎµÏ…ÏƒÎ· Ï„Ï‰Î½ Î½Î­Ï‰Î½ Î¼Î·Î½Ï…Î¼Î¬Ï„Ï‰Î½ ÏƒÎµ Î­Î½Î± Î½Î­Î¿ Î±Ï?Ï‡ÎµÎ¯Î¿ .mat

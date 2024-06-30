@@ -1,30 +1,5 @@
-function apply_hamming_coding_4()
-    % Παίρνουμε τα νέα μηνύματα μετά το CRC
-    load('new_data_3.mat', 'new_data');
-    
-    num_messages = size(new_data, 1); % Θα είναι 100.000
-    
-    % Πίνακα που θα κρατά τα μηνύματα μετά το Hamming
-    encoded_messages = zeros(num_messages, 56);
-    
-    for idx = 1:num_messages
-        message = new_data(idx, :);
-        
-        % ΠΡΟΣΟΧΗ --> Στην εκφώνηση ζητά να γίνει κωδικοποιήση σε 24 bits
-        % έγω στο προηγούμενο ερώτημα έβγαλα τα μηνύματα σε 32 bits.
-        assert(length(message) == 32, 'Message length must be 32 bits.');
-        
-        % Καλούμε την παρακάτω συνάρτηση που κάνει Hamming encoding
-        encodedMessage = hamming_encode_32bits(message);
-        
-        encoded_messages(idx, :) = encodedMessage;
-    end
-
-    % Αποθήκευση κάθε αποτελέσματος σε νέο .mat file
-    save('encoded_messages.mat', 'encoded_messages');
-end
-
-function encodedMessage = hamming_encode_32bits(message)
+% για τοπικό έλεγχο
+function encodedMessage = test_hamming(message)
     encodedMessage = zeros(1, 56); % 8 segments των 7 bits
 
     % Προσοχή -->
@@ -55,4 +30,3 @@ function encodedMessage = hamming_encode_32bits(message)
         encodedMessage(7*i+1:7*i+7) = encodedSegment;
     end
 end
-
