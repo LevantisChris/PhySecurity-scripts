@@ -1,0 +1,36 @@
+function test_new_deHamming()
+    % Παίρνουμε τα μηνύματα μετά την αποδιαμόρφωση 
+    load('demodulated_messages_9.mat', 'demodulated_messages');
+
+    num_messages = size(demodulated_messages, 1);
+
+    %received_message = demodulated_messages(1, :);
+    %disp(received_message((1-1)*7 + 1 : 1*7));
+
+    for idx = 1:num_messages
+        received_message = demodulated_messages(idx, :);
+        % Κάνουμε Hamming decoding για κάθε 7-bit κομμάτι (Hamming (7,4)).
+        % Στην κωδικοποιήση (7, 4) από 4bit λαμβάνουμε 7bit άρα τώρα θα
+        % κάνουμε το ανάποδο, NOTE: 7-bit -> 
+        % Π3 Π2 Π1 Ε2 Π0 Ε1 Ε0
+        % Π3 --> segment(1)
+        % Π2 --> segment(2)
+        % Π1 --> segment(3)
+        % Π0 --> segment(5)
+        % E0 --> segment(7)
+        % E1 --> segment(6)
+        % E2 --> segment(4)
+        
+        % Τα μηνύματα είναι 58-bits άρα θα έχουμε 58/7 = 8 ζευγαράκια
+        for i = 1:8
+            % Παίρνουμε το 7-bit μέρος από όλο το μήνυμα που είναι 56-bits
+            segment = received_message((i-1)*7 + 1 : i*7);
+
+            % Τώρα πρέπει να υπολογίσουμε το σύνδρομο
+            % Z0 = E0 xor Π0 xor Π1 xor Π3
+            % Z1 = E1 xor Π0 xor Π2 xor Π3
+            % Ζ2 = Ε2 xor Π1 xor Π2 xor Π3
+            Z0 = xor(xor(segment(1), segment(2)), segment(4));
+        end
+    end
+end

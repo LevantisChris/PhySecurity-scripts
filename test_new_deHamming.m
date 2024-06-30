@@ -1,6 +1,13 @@
-function test(demodulated_messages)
+function test_new_deHamming()
+    %% DE-HAMMING AND CORRECTION
     
-    received_message = demodulated_messages;
+    % Παίρνουμε τα μηνύματα μετά την αποδιαμόρφωση 
+    load('demodulated_messages_9.mat', 'demodulated_messages');
+
+    num_messages = size(demodulated_messages, 1);
+
+    for idx = 1:num_messages
+        received_message = demodulated_messages(idx, :);
         % Κάνουμε Hamming decoding για κάθε 7-bit κομμάτι (Hamming (7,4)).
         % Στην κωδικοποιήση (7, 4) από 4bit λαμβάνουμε 7bit άρα τώρα θα
         % κάνουμε το ανάποδο, NOTE: 7-bit -> 
@@ -33,17 +40,14 @@ function test(demodulated_messages)
                 xor(segment(2), segment(1)));
             S = strcat(num2str(Z2), num2str(Z1), num2str(Z0));
             position = bin2dec(S); % Η θέση που το λάθος εντοπίστηκε, αυτό θα διορθώσουμε
-            disp(segment);
-            disp(S)
-            disp(position)
             correct_segment = recplaceError(segment, position);
-            disp(correct_segment);
-            disp("----------------------")
+            
+            % Τώρα κάνουμε concat ξανά πίσω τα νέα διορθωμένα μηνύματα
             corrected_message((i-1)*7 + 1 : i*7) = correct_segment;
         end
-
-        disp(corrected_message);
-
+        decoded_messages(idx, :) = corrected_message;
+    end
+    save('decoded_messages_de_Hamming_11b.mat', 'decoded_messages');
 end
 
 function [new_segment] = recplaceError(segment, position)

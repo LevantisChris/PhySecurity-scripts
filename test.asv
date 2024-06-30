@@ -39,7 +39,7 @@ function test(demodulated_messages)
             correct_segment = recplaceError(segment, position);
             disp(correct_segment);
             disp("----------------------")
-            corrected_message((i-1)*7 + 1 : i*7) = correct_segment;
+            corrected_message((i-1)*7 + 1 : i*7) =  correct_segment;
         end
 
         disp(corrected_message);
