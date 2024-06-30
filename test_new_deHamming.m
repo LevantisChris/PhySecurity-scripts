@@ -1,4 +1,5 @@
 function test_new_deHamming()
+    %% NOT THE ORIGINAL
     %% DE-HAMMING AND CORRECTION
     
     % Παίρνουμε τα μηνύματα μετά την αποδιαμόρφωση 
