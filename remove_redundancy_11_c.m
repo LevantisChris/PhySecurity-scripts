@@ -6,7 +6,7 @@ function remove_redundancy_11_c()
         received_message = decoded_messages(idx, :);
         for i = 1:8
             seven_bit_segment = received_message((i-1)*7 + 1 : i*7); % 7-bit segment
-            final_segment = remove_parity_bits(seven_bit_segment); % Καλούμε την συνάρτηση
+            final_segment = remove_parity_bits(seven_bit_segment); % Καλούμε την συνάρτηση για το 7-bit κομμάτι
             final_segments((i-1)*4 + 1 : i*4) = final_segment; % Τώρα θα είναι 4-bit (7 - 3)
         end
         unRedundancy_messages(idx, :) = final_segments;
