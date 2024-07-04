@@ -41,7 +41,7 @@ function encoded_messages = superpositionCoding_6_new()
         % και το αντιστοιχουμε
         subset_indices = find(constellation_points == decimal_indices(i));
 
-        % Σημαντικό είναι ότι μη ντεντερμινιστικά επιλέγουμε το σημείο
+        % Σημαντικό είναι ότι μη-ντεντερμινιστικά επιλέγουμε το σημείο
         selected_point_index = subset_indices(randi(length(subset_indices)));
 
         selected_real = real_parts(selected_point_index);
