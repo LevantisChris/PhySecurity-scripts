@@ -1,31 +1,39 @@
-function y = test2(singal, SNR_dB)
-    % Στο κανάλι περνάμε τα μηνύματα που έχουμε διαμορφώσει με 64-QAM στο
-    % ερώτημα 5. Αυτά θα πρέπει να αποδιαμορφώση ο δέκτης
-    %load('modulated_signals_5.mat', 'modulated_signals');
+function test2(Hm)
+        
+    % MRC: 
+    % Παίρνουμε τις διαστάσεις του για να ξέρουμε πόσα σήματα θα στείλουμε.
+    [M, ~] = size(Hm); 
 
-    x = singal;
+    P_each = 1/M; % Επίσης σε κάθε σήμα κατανέμεται ίση ισχύς, P = 1/2.
 
-    % Ισχύς σήματος
-    signal_power = mean(abs(x(:)).^2);
-    disp(signal_power)
-    
-    % Μετατροπή SNR
-    SNR_linear = 10^(SNR_dB / 10);
-    disp(ceil(SNR_linear)); % ceil γιατί έτσι γίνεται και στις διαφάνειες
-    
-    % πάμε να βρούμε την διασπορά
-    % SNR = signal_power / σ =>
-    % σ * SNR = signal_power => 
-    % σ = signal_power / SNR
-    noise_variance = signal_power / SNR_linear;
-    
-    % Δημιουργούμε τον θόρυβο
-    noise_real = sqrt(noise_variance / 2) * randn(size(x));
-    noise_imag = sqrt(noise_variance / 2) * randn(size(x));
-    noise = noise_real + 1i * noise_imag;
-    
-    % Προσθέτουμε τον θόρυβο
-    y = x + noise;
+    Hm_ctranspose = ctranspose(Hm);
 
-    save('received_signals_7.mat', 'y');
+    P_all = [];
+    for signal_id = 1:M
+        sum = (Hm_ctranspose(signal_id, 1)) ...
+            + (Hm_ctranspose(signal_id, 2));
+
+        P_new = (abs(sum)^2) * P_each;
+        
+        %disp(Hm_ctranspose(signal_id, :));
+        %disp(P_new)
+        %disp("------------------------------")
+        P_all(signal_id, :) = P_new;
+    end
+    disp("----------------------------------")
+    disp(P_all);
+
+        %% Υπολογίζουμε την μέγιστη ισχύ
+    disp("----------------------------------")
+    disp("Power for each signal:")
+    disp(P_all);
+    
+    [M, ~] = size(P_all);
+    sum = 0;
+    for signal_id = 1:M
+        sum = sum + P_all(signal_id, 1);
+    end
+    disp("------------------------------")
+    disp("The total power is:")
+    disp(sum);
 end

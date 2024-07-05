@@ -1,24 +1,38 @@
 function calc_beamforming(Hm)
-        
-    % MRC: 
+    %% MRC: 
     % Παίρνουμε τις διαστάσεις του για να ξέρουμε πόσα σήματα θα στείλουμε.
-    [M, N] = size(Hm); 
+    [M, ~] = size(Hm); 
 
-    P = 1/M; % Επίσης σε κάθε σήμα κατανέμεται ίση ισχύς, P = 1/3.
-    
-    Hm = ctranspose(Hm);
+    P_each = 1/M; % Επίσης σε κάθε σήμα κατανέμεται ίση ισχύς, P = 1/3.
+
+    Hm_ctranspose = ctranspose(Hm);
 
     P_all = [];
     for signal_id = 1:M
-        P = abs( Hm(signal_id, 1) ...
-            + Hm(signal_id, 2) ...
-            + Hm(signal_id, 3) ...
-            )^2 * P;
-        disp(Hm(signal_id, :));
-        disp(P)
-        disp("------------------------------")
-        P_all(signal_id, :) = P;
+        sum = (Hm_ctranspose(signal_id, 1)) ...
+            + (Hm_ctranspose(signal_id, 2)) ...
+            + (Hm_ctranspose(signal_id, 3));
+
+        P_new = (abs(sum)^2) * P_each;
+        
+        %disp(Hm_ctranspose(signal_id, :));
+        %disp(P_new)
+        %disp("------------------------------")
+        P_all(signal_id, :) = P_new;
     end
+ 
+    %% Υπολογίζουμε την μέγιστη ισχύ
     disp("----------------------------------")
+    disp("Power for each signal:")
     disp(P_all);
+    
+    [M, ~] = size(P_all);
+    sum = 0;
+    for signal_id = 1:M
+        sum = sum + P_all(signal_id, 1);
+    end
+    disp("------------------------------")
+    disp("The total power is:")
+    disp(sum);
+    
 end
