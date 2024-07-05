@@ -55,15 +55,3 @@ function [temp1, y] = calc_beamforming_only_EVE(He, x_bob, temp_bob)
     disp("--> Receiver message");
     disp(y);
 end
-%% Στον τύπο σελίδα 25 φαίνεται ο πίνακας του μηνύματος να έχει 
-% ίδιες διαστάσεις με τον Hm άρα θα πρέπει να φτιάξουμε έναν πίνακα 
-% που θα έχει ίδιες γραμμές με τον H αλλά θα έχει σε κάθε γραμμή το μήνυμα
-% message (και φυσικά σε κάθε στήλη)
-function [message_array] = build_message_array(message, Hm)
-    [rows, ~] = size(Hm);
-    message_array = zeros(rows, length(message));
-    for i = 1:rows
-        message_array(i, :) = message;
-    end
-end
-
